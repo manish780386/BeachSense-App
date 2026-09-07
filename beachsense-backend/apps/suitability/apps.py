@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class SuitabilityConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'suitability'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.suitability"
