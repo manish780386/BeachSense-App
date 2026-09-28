@@ -100,12 +100,3 @@ once running.
 | GET    | `/api/beaches/nearby/?lat=&lng=&radius_km=` | Beaches within radius of a point                |
 | POST   | `/api/token/`                               | Obtain JWT access/refresh token                 |
 | POST   | `/api/token/refresh/`                       | Refresh JWT access token                        |
-
-## Notes
-
-- `apps/ocean_data/services.py` currently returns **mock data** — swap
-  `fetch_reading_for_beach()` with a real INCOIS API call/scraper once
-  access is confirmed with your guide. Nothing else needs to change.
-- The suitability formula lives in `apps/suitability/engine.py` — pure
-  Python, no Django dependency, easy to unit test and to explain in your
-  viva/presentation.
