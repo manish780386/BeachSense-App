@@ -1,5 +1,5 @@
 """
-Django settings for Beach Recreational Suitability App backend.
+Django settings for BeachSense backend.
 """
 
 import os
@@ -72,7 +72,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": os.environ.get("DB_NAME", "beach_safety_db"),
+        "NAME": os.environ.get("DB_NAME", "beachsense_db"),
         "USER": os.environ.get("DB_USER", "postgres"),
         "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
         "HOST": os.environ.get("DB_HOST", "localhost"),
@@ -107,8 +107,8 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Beach Recreational Suitability API",
-    "DESCRIPTION": "APIs for beach suitability, ocean data, alerts and notifications",
+    "TITLE": "BeachSense API",
+    "DESCRIPTION": "BeachSense — real-time beach recreational suitability, ocean data, alerts & notifications API",
     "VERSION": "1.0.0",
 }
 
@@ -122,7 +122,14 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_TIMEZONE = "Asia/Kolkata"
 
 # --- FIREBASE (for push notifications) ---
-FCM_SERVER_KEY = os.environ.get("FCM_SERVER_KEY", "")
+# Legacy "Server Key" is deprecated by Google. We now use the Firebase Admin SDK
+# with a service account JSON file instead. Download this from:
+# Firebase Console -> Project Settings -> Service Accounts -> Generate New Private Key
+# then set the path below (keep the actual file OUT of version control).
+FIREBASE_CREDENTIALS_PATH = os.environ.get(
+    "FIREBASE_CREDENTIALS_PATH",
+    str(BASE_DIR / "secrets" / "firebase-service-account.json"),
+)
 
 # --- INCOIS DATA SOURCE ---
 INCOIS_BASE_URL = os.environ.get("INCOIS_BASE_URL", "")  # set once confirmed with guide

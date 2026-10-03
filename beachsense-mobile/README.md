@@ -1,4 +1,3 @@
-
 # BeachSense — Mobile App
 
 React Native (Expo, plain JavaScript) app showing real-time recreational
@@ -51,7 +50,14 @@ cd beachsense-mobile
 npm install
 ```
 
-### 3. Point the app at your backend
+### 3. Enable push notifications (one-time)
+
+Download `google-services.json` from Firebase Console → Project Settings →
+General → Your apps (the Android app you registered), and place it directly
+in the `beachsense-mobile/` project root (next to `app.config.js`). It's
+already excluded via `.gitignore` since it's per-developer/per-project.
+
+### 4. Point the app at your backend
 
 Open `app.config.js` and set `extra.apiBaseUrl`:
 
@@ -61,7 +67,7 @@ Open `app.config.js` and set `extra.apiBaseUrl`:
   laptop must be on the same Wi-Fi network)
 - **iOS simulator** → `http://localhost:8000/api`
 
-### 4. Run the app
+### 5. Run the app
 
 ```bash
 npm start
