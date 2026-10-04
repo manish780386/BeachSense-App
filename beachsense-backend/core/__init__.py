@@ -1,3 +1,3 @@
-from .celery_app import celery_app  # noqa
+from celery_app.celery import app as celery_app  # noqa
 
 __all__ = ("celery_app",)
