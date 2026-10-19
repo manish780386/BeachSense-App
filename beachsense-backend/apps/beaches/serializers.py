@@ -4,22 +4,19 @@ from apps.suitability.models import SuitabilityStatus
 
 
 class BeachSerializer(serializers.ModelSerializer):
-    latitude = serializers.SerializerMethodField()
-    longitude = serializers.SerializerMethodField()
+    distance_km = serializers.SerializerMethodField()
     current_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Beach
         fields = [
             "id", "name", "state", "district",
-            "latitude", "longitude", "current_status", "is_active",
+            "latitude", "longitude", "distance_km", "current_status", "is_active",
         ]
 
-    def get_latitude(self, obj):
-        return obj.location.y
-
-    def get_longitude(self, obj):
-        return obj.location.x
+    def get_distance_km(self, obj):
+        # Only set on results of the /nearby/ endpoint
+        return getattr(obj, "distance_km", None)
 
     def get_current_status(self, obj):
         latest = (

@@ -14,7 +14,7 @@ jobs:
       postgres:
         image: postgis/postgis:15-3.3
         env:
-          POSTGRES_DB: beach_safety_db
+          POSTGRES_DB: beachsense_db
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
@@ -51,7 +51,7 @@ jobs:
 
       - name: Run Django system checks
         env:
-          DB_NAME: beach_safety_db
+          DB_NAME: beachsense_db
           DB_USER: postgres
           DB_PASSWORD: postgres
           DB_HOST: localhost
@@ -64,7 +64,7 @@ jobs:
 
       - name: Run migrations (verifies model/migration integrity)
         env:
-          DB_NAME: beach_safety_db
+          DB_NAME: beachsense_db
           DB_USER: postgres
           DB_PASSWORD: postgres
           DB_HOST: localhost
@@ -77,4 +77,4 @@ jobs:
           python manage.py migrate
 
       - name: Build Docker image
-        run: docker build -t beach-safety-backend .
+        run: docker build -t beachsense-backend .

@@ -8,6 +8,14 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load variables from .env (if present) so `python manage.py ...` works locally
+# the same way it does inside Docker.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / ".env")
+except ImportError:
+    pass
+
 # --- SECURITY ---
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "replace-this-with-a-real-secret-key")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
@@ -21,7 +29,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.gis",  # GeoDjango - needed for PostGIS geospatial fields
 
     # Third-party
     "rest_framework",
@@ -68,17 +75,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-# --- DATABASE (PostgreSQL + PostGIS) ---
-DATABASES = {
-    "default": {
-        "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": os.environ.get("DB_NAME", "beachsense_db"),
-        "USER": os.environ.get("DB_USER", "postgres"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
-        "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
+
+if os.environ.get("DB_ENGINE", "sqlite").lower() == "postgres":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("DB_NAME", "beach_safety_db"),
+            "USER": os.environ.get("DB_USER", "postgres"),
+            "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
+            "HOST": os.environ.get("DB_HOST", "localhost"),
+            "PORT": os.environ.get("DB_PORT", "5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # --- AUTH ---
 AUTH_USER_MODEL = "users.User"

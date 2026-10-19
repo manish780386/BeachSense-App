@@ -46,7 +46,7 @@ def fetch_real_reading(beach):
     """Pulls genuine current ocean/weather conditions for the beach's
     coordinates from Open-Meteo (no API key needed)."""
 
-    lat, lng = beach.location.y, beach.location.x
+    lat, lng = beach.latitude, beach.longitude
 
     marine_resp = requests.get(
         MARINE_API_URL,
@@ -107,3 +107,4 @@ def fetch_reading_for_beach(beach):
         return fetch_real_reading(beach)
     except (requests.RequestException, ValueError, KeyError):
         return fetch_mock_reading(beach)
+

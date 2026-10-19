@@ -1,8 +1,7 @@
 from celery import shared_task
-from django.contrib.gis.geos import Point
-from django.contrib.gis.measure import D
 
 from apps.users.models import User
+from apps.beaches.geo import beaches_within_radius
 from apps.beaches.models import Beach
 from apps.suitability.models import SuitabilityStatus
 from .models import AlertLog
@@ -21,10 +20,11 @@ def check_and_send_alerts():
     users = User.objects.exclude(last_known_latitude=None).exclude(fcm_token=None)
 
     for user in users:
-        user_point = Point(user.last_known_longitude, user.last_known_latitude, srid=4326)
-        nearby_beaches = Beach.objects.filter(
-            is_active=True,
-            location__distance_lte=(user_point, D(km=ALERT_RADIUS_KM)),
+        nearby_beaches = beaches_within_radius(
+            Beach.objects.filter(is_active=True),
+            user.last_known_latitude,
+            user.last_known_longitude,
+            ALERT_RADIUS_KM,
         )
 
         for beach in nearby_beaches:

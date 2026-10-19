@@ -1,4 +1,4 @@
-from django.contrib.gis.db import models
+from django.db import models
 
 
 class Beach(models.Model):
@@ -8,9 +8,10 @@ class Beach(models.Model):
     state = models.CharField(max_length=100)
     district = models.CharField(max_length=100, blank=True)
 
-    # Geospatial coordinates (longitude, latitude) — geography=True enables
-    # accurate real-world distance calculations (metres) instead of flat-plane math.
-    location = models.PointField(geography=True, srid=4326)
+    # Plain latitude/longitude (WGS84). Nearby-beach search uses the Haversine
+    # formula in apps/beaches/geo.py, so no GDAL/PostGIS install is required.
+    latitude = models.FloatField()
+    longitude = models.FloatField()
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -18,6 +19,7 @@ class Beach(models.Model):
 
     class Meta:
         ordering = ["state", "name"]
+        indexes = [models.Index(fields=["latitude", "longitude"])]
 
     def __str__(self):
         return f"{self.name}, {self.state}"

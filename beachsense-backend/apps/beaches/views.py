@@ -1,7 +1,6 @@
-from django.contrib.gis.geos import Point
-from django.contrib.gis.measure import D
 from rest_framework import viewsets, decorators, response, status
 
+from .geo import beaches_within_radius
 from .models import Beach
 from .serializers import BeachSerializer, BeachDetailSerializer
 
@@ -23,20 +22,16 @@ class BeachViewSet(viewsets.ReadOnlyModelViewSet):
 
     @decorators.action(detail=False, methods=["get"])
     def nearby(self, request):
-        lat = request.query_params.get("lat")
-        lng = request.query_params.get("lng")
-        radius_km = float(request.query_params.get("radius_km", 15))
-
-        if not lat or not lng:
+        try:
+            lat = float(request.query_params.get("lat"))
+            lng = float(request.query_params.get("lng"))
+            radius_km = float(request.query_params.get("radius_km", 15))
+        except (TypeError, ValueError):
             return response.Response(
-                {"detail": "lat and lng query params are required."},
+                {"detail": "lat and lng query params are required and must be numbers."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        user_location = Point(float(lng), float(lat), srid=4326)
-        beaches = Beach.objects.filter(
-            is_active=True,
-            location__distance_lte=(user_location, D(km=radius_km)),
-        )
+        beaches = beaches_within_radius(self.get_queryset(), lat, lng, radius_km)
         serializer = self.get_serializer(beaches, many=True)
         return response.Response(serializer.data)
