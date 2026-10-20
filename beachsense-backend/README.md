@@ -1,5 +1,25 @@
 # BeachSense — Backend
 
+## Quick start on your laptop (no Docker, no PostgreSQL, no GDAL)
+
+```bash
+python -m venv venv
+venv\Scripts\activate            # Windows   (Mac/Linux: source venv/bin/activate)
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_beaches       # loads 20 Indian beaches
+python manage.py refresh_ocean_data # fetches live data + computes status (needs internet)
+python manage.py runserver 0.0.0.0:8000
+```
+
+Check: http://127.0.0.1:8000/api/beaches/  ·  Swagger: http://127.0.0.1:8000/api/docs/
+
+SQLite is the default database. Celery/Redis are NOT needed to run the API; without them the
+ocean data is not refreshed automatically, so run `python manage.py refresh_ocean_data` whenever
+you want fresh data. (Docker + PostgreSQL + Celery setup is described further below and is optional.)
+
+---
+
 Django + DRF backend for BeachSense — a mobile app that shows real-time recreational suitability of Indian beaches.
 Fetches ocean/weather data, computes a SUITABLE / CAUTION / NOT_SUITABLE
 status per beach, exposes it via REST APIs, and sends location-based push

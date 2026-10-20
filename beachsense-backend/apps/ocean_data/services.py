@@ -59,7 +59,11 @@ def fetch_real_reading(beach):
         timeout=8,
     )
     marine_resp.raise_for_status()
-    marine_data = marine_resp.json().get("current", {})
+    marine_json = marine_resp.json()
+    marine_data = marine_json.get("current", {})
+    # Read the unit from the response instead of assuming it (Open-Meteo reports km/h).
+    velocity_unit = (marine_json.get("current_units") or {}).get("ocean_current_velocity", "km/h")
+    velocity_factor = {"km/h": 1.0, "m/s": 3.6, "kn": 1.852, "mp/h": 1.609344}.get(velocity_unit, 1.0)
 
     weather_resp = requests.get(
         WEATHER_API_URL,
@@ -75,7 +79,7 @@ def fetch_real_reading(beach):
     weather_data = weather_resp.json().get("current", {})
 
     wave_height = marine_data.get("wave_height")
-    current_velocity_ms = marine_data.get("ocean_current_velocity")  # metres/sec
+    current_velocity = marine_data.get("ocean_current_velocity")
     wind_speed_kmph = weather_data.get("wind_speed_10m")  # already km/h by default
 
     # Near-shore points sometimes fall outside the marine model's grid coverage
@@ -83,7 +87,7 @@ def fetch_real_reading(beach):
     if wave_height is None or wind_speed_kmph is None:
         return fetch_mock_reading(beach)
 
-    current_speed_kmph = (current_velocity_ms or 0) * 3.6  # m/s -> km/h
+    current_speed_kmph = (current_velocity or 0) * velocity_factor
 
     return {
         "wave_height_m": round(wave_height, 2),

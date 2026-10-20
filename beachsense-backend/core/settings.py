@@ -75,12 +75,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-
+# --- DATABASE ---
+# Default: SQLite (zero setup, works on any laptop - ideal for local development
+# and demos). For Docker / production set DB_ENGINE=postgres in .env and fill in
+# the DB_* values; plain PostgreSQL is enough (no PostGIS / GDAL needed).
 if os.environ.get("DB_ENGINE", "sqlite").lower() == "postgres":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("DB_NAME", "beach_safety_db"),
+            "NAME": os.environ.get("DB_NAME", "beachsense_db"),
             "USER": os.environ.get("DB_USER", "postgres"),
             "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
             "HOST": os.environ.get("DB_HOST", "localhost"),
