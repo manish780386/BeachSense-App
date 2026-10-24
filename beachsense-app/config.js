@@ -9,4 +9,4 @@
 //        Phone and laptop must be on the SAME Wi-Fi.
 //  * Android emulator        -> "http://10.0.2.2:8000/api"
 //  * iOS simulator           -> "http://localhost:8000/api"
-export const API_BASE_URL = "http://192.168.1.10:8000/api";
+export const API_BASE_URL = "http://10.238.195.192:8000/api";
