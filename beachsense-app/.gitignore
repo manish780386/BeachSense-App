@@ -41,3 +41,6 @@ yarn-error.*
 /android
 
 config.js
+
+# Ignore config file
+/config.js
