@@ -1,5 +1,4 @@
-# Only needed for Docker / PostgreSQL (DB_ENGINE=postgres) and push notifications.
-# Not required to run the backend on your laptop.
+
 psycopg2-binary>=2.9.10
 gunicorn>=22.0
 firebase-admin>=6.5
